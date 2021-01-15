@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Moviebase</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_movie">Movie</string>
+    <string name="title_tv_show">TV Show</string>
+    <string name="title_favorite">Favorite</string>
+</resources>
