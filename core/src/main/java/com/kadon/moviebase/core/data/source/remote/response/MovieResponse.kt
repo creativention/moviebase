@@ -2,22 +2,7 @@ package com.kadon.moviebase.core.data.source.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieListResponse(
-
-	@field:SerializedName("page")
-	val page: Int,
-
-	@field:SerializedName("total_pages")
-	val totalPages: Int,
-
-	@field:SerializedName("results")
-	val results: List<ResultsItem>,
-
-	@field:SerializedName("total_results")
-	val totalResults: Int
-)
-
-data class ResultsItem(
+data class MovieResponse(
 
 	@field:SerializedName("overview")
 	val overview: String,
