@@ -1,16 +1,152 @@
 package com.kadon.moviebase.ui.detail
 
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.palette.graphics.Palette
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.kadon.moviebase.R
+import com.kadon.moviebase.core.domain.model.MovieModel
+import com.kadon.moviebase.core.utils.GlideApp
+import com.kadon.moviebase.core.utils.K
+import com.kadon.moviebase.databinding.ActivityDetailBinding
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailActivity : AppCompatActivity() {
-    companion object{
+    companion object {
         const val EXTRA_MOVIE_DATA = "extraMovieData"
     }
 
+    private lateinit var binding: ActivityDetailBinding
+    private val detailViewModel: DetailViewModel by viewModel()
+    private lateinit var movieDetail: MovieModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail)
+        binding = ActivityDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.materialToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val bundle: Bundle? = intent.extras
+        if (bundle != null) {
+            movieDetail = bundle.getParcelable(EXTRA_MOVIE_DATA)!!
+            Log.d("DetailActivity", "movieDetail = ${movieDetail.toString()}")
+
+            bindMovieDetail(movieDetail)
+        }
+
+    }
+
+    private fun bindMovieDetail(movieDetail: MovieModel?) {
+        movieDetail?.let { it ->
+            supportActionBar?.title = it.movieTitle
+            GlideApp.with(this)
+                .asBitmap()
+                .load("${K.IMAGE_BACKDROP_BASE}${it.backdropPath}")
+                .listener(object : RequestListener<Bitmap> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Bitmap?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        convertToBitmap(binding.imageViewBackDrop)?.let {
+                            resource?.let { it1 -> createPaletteAsync(it1) }
+                        }
+                        return false
+                    }
+                })
+                .placeholder(R.drawable.img_bg)
+                .into(binding.imageViewBackDrop)
+
+            GlideApp.with(this)
+                .load("${K.IMAGE_BASE}${it.posterPath}")
+                .placeholder(R.drawable.img_bg)
+                .into(binding.includeContent.imageViewPosterDetail)
+
+            ("User Score " + (it.voteAverage * 10) + "%").also {
+                binding.includeContent.tvUserScore.text = it
+            }
+            binding.includeContent.tvOriginalTitle.text = it.originalTitle
+            binding.includeContent.tvOverview.text = it.overview
+            binding.includeContent.tvReleaseDate.text = it.releaseDate
+
+            var isMovieFavorite = movieDetail.isFavorite
+            setMovieFavorite(isMovieFavorite)
+            binding.includeContent.mbFavorite.setOnClickListener{
+                isMovieFavorite = !isMovieFavorite
+                Log.d("DetailActivity", "isMovieFavorite = $isMovieFavorite")
+                detailViewModel.setFavoriteMovie(movieDetail, isMovieFavorite)
+                setMovieFavorite(isMovieFavorite)
+            }
+
+            binding.includeContent.ratingBar2.rating = (movieDetail.voteAverage/2).toFloat()
+
+        }
+    }
+
+    private fun setToolbarColor(palette: Palette?) {
+        // Generate the palette and get the vibrant swatch
+        val vibrantSwatch = palette?.vibrantSwatch
+        val lightVibrantSwatch = palette?.lightVibrantSwatch
+        val dominantSwatch = palette?.dominantSwatch
+
+        with(binding.toolbarLayoutMain) {
+            setContentScrimColor(
+                vibrantSwatch?.rgb
+                    ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
+            )
+            setCollapsedTitleTextColor(
+                dominantSwatch?.rgb
+                    ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
+            )
+            setExpandedTitleColor(
+                dominantSwatch?.rgb
+                    ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
+            )
+        }
+    }
+
+    private fun createPaletteAsync(bitmap: Bitmap) {
+        val builder = Palette.Builder(bitmap)
+        builder.generate { palette: Palette? ->
+            //access palette instance here
+            setToolbarColor(palette)
+        }
+    }
+
+    private fun convertToBitmap(imageView: ImageView): Bitmap? {
+        val drawable = imageView.drawable as BitmapDrawable
+        return drawable.bitmap
+    }
+
+    private fun setMovieFavorite(movieFavorite: Boolean) {
+        if (movieFavorite){
+            binding.includeContent.mbFavorite.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_favorite_24, theme)
+        } else {
+            binding.includeContent.mbFavorite.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_favorite_border_24, theme)
+        }
     }
 }

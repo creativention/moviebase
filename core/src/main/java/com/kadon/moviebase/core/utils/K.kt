@@ -8,5 +8,6 @@ object K {
     const val CATEGORY_NOW_PLAYING = "now_playing"
     const val CATEGORY_IMAGE = "popular"
     const val IMAGE_BASE = "https://image.tmdb.org/t/p/w500"
+    const val IMAGE_BACKDROP_BASE = "https://image.tmdb.org/t/p/w780"
     const val PAGE = 1
 }

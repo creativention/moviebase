@@ -3,11 +3,9 @@ package com.kadon.moviebase.ui.favorite
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import com.kadon.moviebase.core.domain.usecase.MovieUseCase
 
-class FavoriteViewModel : ViewModel() {
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
-    }
-    val text: LiveData<String> = _text
+class FavoriteViewModel(movieUseCase: MovieUseCase) : ViewModel() {
+    val favoriteMovie = movieUseCase.getFavoriteMovies().asLiveData()
 }

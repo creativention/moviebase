@@ -1,6 +1,10 @@
 package com.kadon.moviebase.ui.detail
 
 import androidx.lifecycle.ViewModel
+import com.kadon.moviebase.core.domain.model.MovieModel
+import com.kadon.moviebase.core.domain.usecase.MovieUseCase
 
-class DetailViewModel: ViewModel() {
+class DetailViewModel(private val movieUseCase: MovieUseCase): ViewModel() {
+    fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean) =
+        movieUseCase.setFavoriteMovie(movieModel, isFavorite)
 }
