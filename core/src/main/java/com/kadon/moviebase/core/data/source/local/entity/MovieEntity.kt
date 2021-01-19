@@ -34,7 +34,7 @@ data class MovieEntity (
     var backdropPath: String? = null,
 
     @ColumnInfo(name = "releaseDate")
-    var releaseDate: String,
+    var releaseDate: String? = null,
 
     @ColumnInfo(name = "popularity")
     var popularity: Double,

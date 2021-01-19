@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.kadon.moviebase.R
 import com.kadon.moviebase.core.domain.model.MovieModel
+import com.kadon.moviebase.core.utils.ColorFactor
 import com.kadon.moviebase.core.utils.GlideApp
 import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.databinding.ActivityDetailBinding
@@ -112,19 +113,20 @@ class DetailActivity : AppCompatActivity() {
         val vibrantSwatch = palette?.vibrantSwatch
         val lightVibrantSwatch = palette?.lightVibrantSwatch
         val dominantSwatch = palette?.dominantSwatch
+        val mutedSwatch = palette?.darkMutedSwatch
 
         with(binding.toolbarLayoutMain) {
             setContentScrimColor(
                 vibrantSwatch?.rgb
                     ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
             )
-            setCollapsedTitleTextColor(
-                dominantSwatch?.rgb
+            setExpandedTitleColor(
+                    lightVibrantSwatch?.rgb
                     ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
             )
-            setExpandedTitleColor(
-                dominantSwatch?.rgb
-                    ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
+            setCollapsedTitleTextColor(
+                    ColorFactor.darkenColor(vibrantSwatch?.rgb
+                            ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary), 0.4f)
             )
         }
     }
@@ -148,5 +150,16 @@ class DetailActivity : AppCompatActivity() {
         } else {
             binding.includeContent.mbFavorite.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_favorite_border_24, theme)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 }

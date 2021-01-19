@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 class MovieInteractor(
     private val movieRepository: IMovieRepository
 ): MovieUseCase {
-    override fun getMovies(): Flow<Resource<List<MovieModel>>> {
-        return movieRepository.getMovies()
+    override fun getMovies(s: String, page: Int): Flow<Resource<List<MovieModel>>> {
+        return movieRepository.getMovies(s, page)
     }
 
     override fun getFavoriteMovies(): Flow<List<MovieModel>> {

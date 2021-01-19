@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
         val navGraphIds = listOf(
             R.navigation.movie_navigation,
-            R.navigation.tv_navigation,
             R.navigation.favorite_navigation)
 
         val controller = bottomNavigationView.setupWithNavController(

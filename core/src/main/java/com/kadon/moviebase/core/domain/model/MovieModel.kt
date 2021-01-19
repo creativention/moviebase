@@ -13,7 +13,7 @@ data class MovieModel(
     var movieTitle: String,
     val posterPath: String? = null,
     val backdropPath: String? = null,
-    val releaseDate: String,
+    val releaseDate: String? = null,
     val popularity: Double,
     val voteAverage: Double,
     val adult: Boolean,

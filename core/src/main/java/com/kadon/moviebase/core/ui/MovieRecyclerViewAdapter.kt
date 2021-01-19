@@ -10,6 +10,7 @@ import com.kadon.moviebase.core.domain.model.MovieModel
 import com.kadon.moviebase.core.utils.GlideApp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class MovieRecyclerViewAdapter: RecyclerView.Adapter<MovieRecyclerViewAdapter.VH>() {
     private var movieData = ArrayList<MovieModel>()
@@ -19,7 +20,15 @@ class MovieRecyclerViewAdapter: RecyclerView.Adapter<MovieRecyclerViewAdapter.VH
         if (newMovieData!=null){
             movieData.clear()
             movieData.addAll(newMovieData)
-            notifyDataSetChanged()
+            //notifyDataSetChanged()
+            notifyItemRangeChanged(0, movieData.size)
+        }
+    }
+
+    fun loadMoreData(refreshedMovieData: List<MovieModel>?){
+        if (refreshedMovieData!=null){
+            movieData.addAll(refreshedMovieData)
+            notifyItemRangeChanged(0, movieData.size)
         }
     }
 
@@ -38,7 +47,7 @@ class MovieRecyclerViewAdapter: RecyclerView.Adapter<MovieRecyclerViewAdapter.VH
         fun bind(movie: MovieModel) {
             with(binding){
                 tvTitle.text = movie.movieTitle
-                tvDate.text = getFormattedDate(movie.releaseDate)
+                tvDate.text = movie.releaseDate?.let { getFormattedDate(it) }
                 GlideApp.with(itemView.context)
                     .load("https://image.tmdb.org/t/p/w500${movie.posterPath}")
                     .into(imageViewPoster)
@@ -58,8 +67,12 @@ class MovieRecyclerViewAdapter: RecyclerView.Adapter<MovieRecyclerViewAdapter.VH
     }
 
     private fun getFormattedDate(s: String): String {
-        val date = LocalDate.parse(s, DateTimeFormatter.ISO_DATE)
-        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-        return date.format(formatter)
+        return try {
+            val date = LocalDate.parse(s, DateTimeFormatter.ISO_DATE)
+            val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+            date.format(formatter)
+        } catch (e: DateTimeParseException){
+            "-"
+        }
     }
 }

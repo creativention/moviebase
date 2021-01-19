@@ -17,5 +17,8 @@
     <style name="Theme.Moviebase.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryVariant">@android:color/transparent</item>
     </style>
+
+    <style name="PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 </resources>
