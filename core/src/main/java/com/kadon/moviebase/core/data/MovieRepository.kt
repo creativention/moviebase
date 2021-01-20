@@ -1,7 +1,5 @@
 package com.kadon.moviebase.core.data
 
-import com.kadon.moviebase.core.data.NetworkBoundResource
-import com.kadon.moviebase.core.data.Resource
 import com.kadon.moviebase.core.data.source.local.LocalDataSource
 import com.kadon.moviebase.core.data.source.remote.RemoteDataSource
 import com.kadon.moviebase.core.data.source.remote.api.ApiResponse
@@ -23,14 +21,15 @@ class MovieRepository(
             page: Int
     ): Flow<Resource<List<MovieModel>>> {
         return object: NetworkBoundResource<List<MovieModel>, List<MovieResponse>>(){
+
             override fun loadFromDB(): Flow<List<MovieModel>> =
                     localDataSource.getMovies().map {
                         MapData.mapMovieEntitiesToDomain(it)
                     }
 
             override fun shouldFetch(data: List<MovieModel>?): Boolean {
-                //return (data == null || data.isEmpty())
-                return true
+                return (data == null || data.isEmpty())
+                //return true
             }
 
             override suspend fun createCall(): Flow<ApiResponse<List<MovieResponse>>> =

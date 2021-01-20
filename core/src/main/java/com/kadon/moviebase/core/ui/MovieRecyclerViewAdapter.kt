@@ -21,7 +21,8 @@ class MovieRecyclerViewAdapter: RecyclerView.Adapter<MovieRecyclerViewAdapter.VH
             movieData.clear()
             movieData.addAll(newMovieData)
             //notifyDataSetChanged()
-            notifyItemRangeChanged(0, movieData.size)
+            //notifyItemRangeChanged(0, movieData.size)
+            notifyItemChanged(movieData.size - 1)
         }
     }
 

@@ -24,7 +24,7 @@ class MovieFragment : Fragment() {
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
     private val movieAdapter = MovieRecyclerViewAdapter()
-    private var pageNumber : Int = 0
+    private var pageNumber : Int = 1
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -38,7 +38,6 @@ class MovieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pageNumber = K.PAGE
         if (activity!=null){
             movieAdapter.onMovieClick = {
                 val intent = Intent(activity, DetailActivity::class.java)
@@ -46,7 +45,28 @@ class MovieFragment : Fragment() {
                 startActivity(intent)
             }
 
-            movieViewModel.movieLiveData.observe(viewLifecycleOwner, Observer { movies ->
+            /*movieViewModel.movieLiveData.observe(viewLifecycleOwner, Observer { movies ->
+                if (movies != null) {
+                    when (movies) {
+                        is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
+                        is Resource.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            movieAdapter.setData(movies.data)
+                        }
+                        is Resource.Error -> {
+                            Toast.makeText(requireContext(), "Something Error!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            })*/
+
+            with(binding.recyclerviewMovie){
+                layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                adapter = movieAdapter
+                recyclerViewListener(binding.recyclerviewMovie)
+            }
+
+            movieViewModel.loadMore(K.CATEGORY_POPULAR, pageNumber).observe(viewLifecycleOwner, Observer { movies ->
                 if (movies != null) {
                     when (movies) {
                         is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
@@ -60,12 +80,6 @@ class MovieFragment : Fragment() {
                     }
                 }
             })
-
-            with(binding.recyclerviewMovie){
-                layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-                adapter = movieAdapter
-                recyclerViewListener(binding.recyclerviewMovie)
-            }
         }
     }
 
@@ -109,7 +123,4 @@ class MovieFragment : Fragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
-    }
 }
