@@ -1,4 +1,4 @@
-package com.kadon.moviebase.ui.favorite
+package com.kadon.moviebase.favorite
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kadon.moviebase.core.ui.MovieRecyclerViewAdapter
-import com.kadon.moviebase.databinding.FragmentFavoriteBinding
+import com.kadon.moviebase.favorite.databinding.FragmentFavoriteBinding
+import com.kadon.moviebase.favorite.di.favoriteModul
 import com.kadon.moviebase.ui.detail.DetailActivity
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.context.loadKoinModules
+
 
 class FavoriteFragment : Fragment() {
 
@@ -22,17 +25,19 @@ class FavoriteFragment : Fragment() {
 
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        loadKoinModules(favoriteModul)
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (activity!=null){
+        if (activity != null) {
+
             val movieAdapter = MovieRecyclerViewAdapter()
             movieAdapter.onMovieClick = {
                 val intent = Intent(activity, DetailActivity::class.java)
@@ -42,10 +47,11 @@ class FavoriteFragment : Fragment() {
 
             favoriteViewModel.favoriteMovie.observe(viewLifecycleOwner, { favoriteMovie ->
                 movieAdapter.setData(favoriteMovie)
-                binding.viewEmpty.root.visibility = if (favoriteMovie.isNotEmpty()) View.GONE else View.VISIBLE
+                binding.viewEmpty.root.visibility =
+                    if (favoriteMovie.isNotEmpty()) View.GONE else View.VISIBLE
             })
 
-            with(binding.recyclerviewMovieFavorite){
+            with(binding.recyclerviewMovieFavorite) {
                 layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                 adapter = movieAdapter
             }

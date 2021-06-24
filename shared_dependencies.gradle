@@ -15,8 +15,8 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     //Navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
     //koin
     implementation "org.koin:koin-core:$koin_version"
@@ -25,4 +25,8 @@ dependencies {
 
     //Gson
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // Paging
+    def paging_version = "3.0.0-alpha13"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }

@@ -11,7 +11,7 @@ class LocalDataSource(
     fun getFavoriteMovies(): Flow<List<MovieEntity>> = movieDao.getFavoriteMovies()
     suspend fun insertMovies(movies: List<MovieEntity>) = movieDao.insertMovies(movies)
 
-    fun saveFavoriteMovie(movie: MovieEntity, isFavorite: Boolean){
+    fun saveFavoriteMovie(movie: MovieEntity, isFavorite: Boolean) {
         movie.isFavorite = isFavorite
         movieDao.updateFaveMovie(movie)
     }

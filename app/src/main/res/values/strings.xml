@@ -10,4 +10,6 @@
     <string name="dummy_description">Image</string>
     <string name="action_favorite">Set Favorite</string>
     <string name="my_favorite">My Favorite</string>
+    <string name="search_movie">Search Movie</string>
+    <string name="text_search">Search</string>
 </resources>

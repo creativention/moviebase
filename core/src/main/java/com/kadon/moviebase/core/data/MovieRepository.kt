@@ -12,28 +12,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class MovieRepository(
-        private val remoteDataSource: RemoteDataSource,
-        private val localDataSource: LocalDataSource,
-        private val appExecutors: AppExecutors
-): IMovieRepository {
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource,
+    private val appExecutors: AppExecutors
+) : IMovieRepository {
     override fun getMovies(
-            s: String,
-            page: Int
+        s: String,
+        page: Int
     ): Flow<Resource<List<MovieModel>>> {
-        return object: NetworkBoundResource<List<MovieModel>, List<MovieResponse>>(){
+        return object : NetworkBoundResource<List<MovieModel>, List<MovieResponse>>() {
 
             override fun loadFromDB(): Flow<List<MovieModel>> =
-                    localDataSource.getMovies().map {
-                        MapData.mapMovieEntitiesToDomain(it)
-                    }
+                localDataSource.getMovies().map {
+                    MapData.mapMovieEntitiesToDomain(it)
+                }
 
-            override fun shouldFetch(data: List<MovieModel>?): Boolean {
-                return (data == null || data.isEmpty())
-                //return true
-            }
+            override fun shouldFetch(data: List<MovieModel>?): Boolean = true //data.isNullOrEmpty()
 
             override suspend fun createCall(): Flow<ApiResponse<List<MovieResponse>>> =
-                    remoteDataSource.getMovies(s,page)
+                remoteDataSource.getMovies(s, page)
 
             override suspend fun saveCallResult(data: List<MovieResponse>) {
                 val movies = MapData.mapMovieResponsesToEntities(data)
@@ -43,13 +40,13 @@ class MovieRepository(
     }
 
     override fun getFavoriteMovies(): Flow<List<MovieModel>> =
-            localDataSource.getFavoriteMovies().map {
-                MapData.mapMovieEntitiesToDomain(it)
-            }
+        localDataSource.getFavoriteMovies().map {
+            MapData.mapMovieEntitiesToDomain(it)
+        }
 
     override fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean) {
         val movieEntity = MapData.mapDomainToMovieEntities(movieModel)
-        appExecutors.diskIO().execute{
+        appExecutors.diskIO().execute {
             localDataSource.saveFavoriteMovie(movieEntity, isFavorite)
         }
     }

@@ -1,7 +1,5 @@
-package com.kadon.moviebase.ui.favorite
+package com.kadon.moviebase.favorite
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.kadon.moviebase.core.domain.usecase.MovieUseCase

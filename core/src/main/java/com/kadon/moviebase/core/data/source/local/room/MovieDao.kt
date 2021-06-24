@@ -1,5 +1,6 @@
 package com.kadon.moviebase.core.data.source.local.room
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.kadon.moviebase.core.data.source.local.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
@@ -12,9 +13,10 @@ interface MovieDao {
     @Query("SELECT * FROM movies WHERE isFavorite = 1")
     fun getFavoriteMovies(): Flow<List<MovieEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovies(movies: List<MovieEntity>)
 
     @Update
     fun updateFaveMovie(movie: MovieEntity)
+
 }
