@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -64,6 +66,27 @@ class MovieFragment : Fragment() {
                         }
                     }
                 }
+            })
+
+            initSearchFilter()
+        }
+    }
+
+    private fun initSearchFilter() {
+        with(binding.searchView) {
+            setOnClickListener {
+                isIconified = false
+            }
+
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean = true
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    //Log.d("TAG", "query = $newText")
+                    if (newText != null) movieAdapter.filter.filter(newText)
+                    return true
+                }
+
             })
         }
     }

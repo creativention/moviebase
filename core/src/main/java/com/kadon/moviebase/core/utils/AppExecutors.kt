@@ -45,13 +45,13 @@ open class AppExecutors(
         return diskIO
     }
 
-    fun networkIO(): Executor {
+    /*fun networkIO(): Executor {
         return networkIO
     }
 
     fun mainThread(): Executor {
         return mainThread
-    }
+    }*/
 
     private class MainThreadExecutor : Executor {
         private val mainThreadHandler = Handler(Looper.getMainLooper())

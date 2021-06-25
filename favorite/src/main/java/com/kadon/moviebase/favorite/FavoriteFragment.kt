@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -54,6 +55,21 @@ class FavoriteFragment : Fragment() {
             with(binding.recyclerviewMovieFavorite) {
                 layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                 adapter = movieAdapter
+            }
+
+            with(binding.searchViewFave) {
+                setOnClickListener {
+                    isIconified = false
+                }
+                setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean = true
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        if (newText != null) movieAdapter.filter.filter(newText)
+                        return true
+                    }
+
+                })
             }
         }
     }
