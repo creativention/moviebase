@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -96,14 +95,14 @@ class DetailActivity : AppCompatActivity() {
 
             var isMovieFavorite = movieDetail.isFavorite
             setMovieFavorite(isMovieFavorite)
-            binding.includeContent.mbFavorite.setOnClickListener{
+            binding.includeContent.mbFavorite.setOnClickListener {
                 isMovieFavorite = !isMovieFavorite
                 Log.d("DetailActivity", "isMovieFavorite = $isMovieFavorite")
                 detailViewModel.setFavoriteMovie(movieDetail, isMovieFavorite)
                 setMovieFavorite(isMovieFavorite)
             }
 
-            binding.includeContent.ratingBar2.rating = (movieDetail.voteAverage/2).toFloat()
+            binding.includeContent.ratingBar2.rating = (movieDetail.voteAverage / 2).toFloat()
 
         }
     }
@@ -112,8 +111,8 @@ class DetailActivity : AppCompatActivity() {
         // Generate the palette and get the vibrant swatch
         val vibrantSwatch = palette?.vibrantSwatch
         val lightVibrantSwatch = palette?.lightVibrantSwatch
-        val dominantSwatch = palette?.dominantSwatch
-        val mutedSwatch = palette?.darkMutedSwatch
+        /*val dominantSwatch = palette?.dominantSwatch
+        val mutedSwatch = palette?.darkMutedSwatch*/
 
         with(binding.toolbarLayoutMain) {
             setContentScrimColor(
@@ -121,12 +120,15 @@ class DetailActivity : AppCompatActivity() {
                     ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
             )
             setExpandedTitleColor(
-                    lightVibrantSwatch?.rgb
+                lightVibrantSwatch?.rgb
                     ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary)
             )
             setCollapsedTitleTextColor(
-                    ColorFactor.darkenColor(vibrantSwatch?.rgb
-                            ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary), 0.4f)
+                ColorFactor.darkenColor(
+                    vibrantSwatch?.rgb
+                        ?: ContextCompat.getColor(context, R.color.design_default_color_on_primary),
+                    0.4f
+                )
             )
         }
     }
@@ -145,10 +147,15 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setMovieFavorite(movieFavorite: Boolean) {
-        if (movieFavorite){
-            binding.includeContent.mbFavorite.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_favorite_24, theme)
+        if (movieFavorite) {
+            binding.includeContent.mbFavorite.icon =
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_favorite_24, theme)
         } else {
-            binding.includeContent.mbFavorite.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_favorite_border_24, theme)
+            binding.includeContent.mbFavorite.icon = ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.ic_baseline_favorite_border_24,
+                theme
+            )
         }
     }
 
