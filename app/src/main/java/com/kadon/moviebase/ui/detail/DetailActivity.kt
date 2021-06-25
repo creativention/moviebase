@@ -42,7 +42,7 @@ class DetailActivity : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
             movieDetail = bundle.getParcelable(EXTRA_MOVIE_DATA)!!
-            Log.d("DetailActivity", "movieDetail = ${movieDetail.toString()}")
+            Log.d("DetailActivity", "movieDetail = $movieDetail")
 
             bindMovieDetail(movieDetail)
         }
