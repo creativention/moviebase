@@ -38,7 +38,7 @@ data class MovieResponse(
 	val voteAverage: Double,
 
 	@field:SerializedName("id")
-	val id: Int,
+	val id: Long,
 
 	@field:SerializedName("adult")
 	val adult: Boolean,

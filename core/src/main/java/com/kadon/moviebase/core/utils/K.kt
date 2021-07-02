@@ -7,4 +7,5 @@ object K {
     const val IMAGE_BASE = "https://image.tmdb.org/t/p/w500"
     const val IMAGE_BACKDROP_BASE = "https://image.tmdb.org/t/p/w780"
     const val PAGE = 1
+    const val MOVIE_ID = "movieId"
 }

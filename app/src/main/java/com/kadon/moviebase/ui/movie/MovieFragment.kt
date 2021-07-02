@@ -2,7 +2,6 @@ package com.kadon.moviebase.ui.movie
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kadon.moviebase.core.data.Resource
 import com.kadon.moviebase.core.ui.MovieRecyclerViewAdapter
+import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.databinding.FragmentMovieBinding
 import com.kadon.moviebase.ui.detail.DetailActivity
 import org.koin.android.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class MovieFragment : Fragment() {
 
@@ -39,7 +40,7 @@ class MovieFragment : Fragment() {
         if (activity != null) {
             movieAdapter.onMovieClick = {
                 val intent = Intent(activity, DetailActivity::class.java)
-                intent.putExtra(DetailActivity.EXTRA_MOVIE_DATA, it)
+                intent.putExtra(K.MOVIE_ID, it.movieId)
                 startActivity(intent)
             }
 
@@ -49,13 +50,12 @@ class MovieFragment : Fragment() {
             }
 
             movieViewModel.movieLiveData.observe(viewLifecycleOwner, { movies ->
-                Log.d("TAG", "observe movieLiveData")
+                Timber.d("observe movieLiveData")
 
                 if (movies != null) {
                     when (movies) {
                         is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
                         is Resource.Success -> {
-                            Log.d("TAG", "observe Resource.Success")
                             binding.progressBar.visibility = View.GONE
                             movieAdapter.setData(movies.data)
                         }

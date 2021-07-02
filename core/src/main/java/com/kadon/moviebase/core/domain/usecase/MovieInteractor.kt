@@ -5,9 +5,10 @@ import com.kadon.moviebase.core.domain.model.MovieModel
 import com.kadon.moviebase.core.domain.repository.IMovieRepository
 import kotlinx.coroutines.flow.Flow
 
+@Suppress("SpellCheckingInspection")
 class MovieInteractor(
     private val movieRepository: IMovieRepository
-): MovieUseCase {
+) : MovieUseCase {
     override fun getMovies(s: String, page: Int): Flow<Resource<List<MovieModel>>> {
         return movieRepository.getMovies(s, page)
     }
@@ -18,5 +19,9 @@ class MovieInteractor(
 
     override fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean) {
         return movieRepository.setFavoriteMovie(movieModel, isFavorite)
+    }
+
+    override fun getMovieDetail(movieId: Long): Flow<MovieModel> {
+        return movieRepository.getMovieDetail(movieId)
     }
 }

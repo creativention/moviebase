@@ -50,4 +50,9 @@ class MovieRepository(
             localDataSource.saveFavoriteMovie(movieEntity, isFavorite)
         }
     }
+
+    override fun getMovieDetail(movieId: Long): Flow<MovieModel> =
+        localDataSource.getMovieDetail(movieId).map{
+            MapData.mapMovieEntityToDomain(it)
+        }
 }
