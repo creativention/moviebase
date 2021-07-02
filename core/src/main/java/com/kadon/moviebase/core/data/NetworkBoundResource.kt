@@ -1,3 +1,5 @@
+@file:Suppress("RemoveExplicitTypeArguments")
+
 package com.kadon.moviebase.core.data
 
 import com.kadon.moviebase.core.data.source.remote.api.ApiResponse

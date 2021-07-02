@@ -12,21 +12,22 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
-class MoviebaseApplication: Application() {
+@Suppress("unused")
+class MoviebaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Log.d("MoviebaseApplication","onCreate")
-        startKoin{
+        Log.d("MoviebaseApplication", "onCreate")
+        startKoin {
             androidLogger(Level.NONE)
             androidContext(this@MoviebaseApplication)
             modules(
-                    listOf(
-                            databaseModule,
-                            networkModule,
-                            repositoryModule,
-                            useCaseModule,
-                            viewModelModule
-                    )
+                listOf(
+                    databaseModule,
+                    networkModule,
+                    repositoryModule,
+                    useCaseModule,
+                    viewModelModule
+                )
             )
         }
     }

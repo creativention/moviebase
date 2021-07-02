@@ -16,9 +16,6 @@
 
 package com.kadon.moviebase.core.utils
 
-import android.os.Handler
-import android.os.Looper
-
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -31,14 +28,14 @@ import java.util.concurrent.Executors
 
 open class AppExecutors(
     private val diskIO: Executor,
-    private val networkIO: Executor,
-    private val mainThread: Executor
+    /*private val networkIO: Executor,
+    private val mainThread: Executor*/
 ) {
 
     constructor() : this(
         Executors.newSingleThreadExecutor(),
-        Executors.newFixedThreadPool(3),
-        MainThreadExecutor()
+        /*Executors.newFixedThreadPool(3),
+        MainThreadExecutor()*/
     )
 
     fun diskIO(): Executor {
@@ -53,10 +50,10 @@ open class AppExecutors(
         return mainThread
     }*/
 
-    private class MainThreadExecutor : Executor {
+    /*private class MainThreadExecutor : Executor {
         private val mainThreadHandler = Handler(Looper.getMainLooper())
         override fun execute(command: Runnable) {
             mainThreadHandler.post(command)
         }
-    }
+    }*/
 }
