@@ -1,6 +1,5 @@
 package com.kadon.moviebase.core.data.source.local.room
 
-import androidx.paging.PagingSource
 import androidx.room.*
 import com.kadon.moviebase.core.data.source.local.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
@@ -18,5 +17,8 @@ interface MovieDao {
 
     @Update
     fun updateFaveMovie(movie: MovieEntity)
+
+    @Query("SELECT * FROM movies WHERE movieId = :movieId")
+    fun getMovieDetail(movieId: Long): Flow<MovieEntity>
 
 }

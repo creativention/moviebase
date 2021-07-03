@@ -63,4 +63,22 @@ object MapData {
         voteCount = input.voteCount,
         isFavorite = input.isFavorite
     )
+
+    fun mapMovieEntityToDomain(it: MovieEntity) : MovieModel =
+        MovieModel(
+             movieId = it.movieId,
+             overview = it.overview,
+             originalLanguage = it.originalLanguage,
+             originalTitle = it.originalTitle,
+             video = it.video,
+             movieTitle = it.movieTitle,
+             posterPath = it.posterPath,
+             backdropPath = it.backdropPath,
+             releaseDate = it.releaseDate,
+             popularity = it.popularity,
+             voteAverage = it.voteAverage,
+             adult = it.adult,
+             voteCount = it.voteCount,
+             isFavorite = it.isFavorite,
+        )
 }

@@ -10,7 +10,7 @@ data class MovieEntity(
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "movieId")
-    var movieId: Int,
+    var movieId: Long,
 
     @ColumnInfo(name = "overview")
     var overview: String,

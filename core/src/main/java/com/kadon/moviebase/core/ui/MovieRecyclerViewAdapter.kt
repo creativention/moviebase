@@ -13,6 +13,8 @@ import com.kadon.moviebase.core.utils.GlideApp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MovieRecyclerViewAdapter : RecyclerView.Adapter<MovieRecyclerViewAdapter.VH>(), Filterable {
     private var movieData = ArrayList<MovieModel>()
@@ -89,10 +91,10 @@ class MovieRecyclerViewAdapter : RecyclerView.Adapter<MovieRecyclerViewAdapter.V
                 } else {
                     val resultList = ArrayList<MovieModel>()
                     for (row in movieData) {
-                        if (row.movieTitle.toLowerCase()
-                                .contains(constraint.toString().toLowerCase()) ||
-                            row.originalTitle.toLowerCase()
-                                .contains(constraint.toString().toLowerCase())
+                        if (row.movieTitle.lowercase(Locale.getDefault())
+                                .contains(constraint.toString().lowercase(Locale.getDefault())) ||
+                            row.originalTitle.lowercase(Locale.getDefault())
+                                .contains(constraint.toString().lowercase(Locale.getDefault()))
                         ) {
                             resultList.add(row)
                         }
@@ -106,11 +108,11 @@ class MovieRecyclerViewAdapter : RecyclerView.Adapter<MovieRecyclerViewAdapter.V
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 if (results != null) if (results.values != null) {
-                        val filtered = results.values as ArrayList<*>
-                        movieDataFiltered = filtered.filterIsInstance<MovieModel>()
-                            .takeIf { it.size == filtered.size } as ArrayList<MovieModel>
-                        notifyDataSetChanged()
-                    }
+                    val filtered = results.values as ArrayList<*>
+                    movieDataFiltered = filtered.filterIsInstance<MovieModel>()
+                        .takeIf { it.size == filtered.size } as ArrayList<MovieModel>
+                    notifyDataSetChanged()
+                }
             }
 
         }

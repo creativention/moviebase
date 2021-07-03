@@ -9,31 +9,16 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("/3/movie/{category}")
     suspend fun getMovies(
-            @Path("category")
-            category: String,
+        @Path("category")
+        category: String,
 
-            @Query("api_key")
-            apiKey: String = K.API_KEY,
+        @Query("api_key")
+        apiKey: String = K.API_KEY,
 
-            @Query("language")
-            language: String = K.LANGUAGE,
+        @Query("language")
+        language: String = K.LANGUAGE,
 
-            @Query("page")
-            page: Int
-    ): GetMovieResponse
-
-    @GET("/3/movie/{category}")
-    suspend fun getMoviesWithPaging(
-            @Path("category")
-            category: String,
-
-            @Query("api_key")
-            apiKey: String = K.API_KEY,
-
-            @Query("language")
-            language: String = K.LANGUAGE,
-
-            @Query("page")
-            page: Int
+        @Query("page")
+        page: Int
     ): GetMovieResponse
 }

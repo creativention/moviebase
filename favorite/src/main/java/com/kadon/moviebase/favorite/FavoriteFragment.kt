@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kadon.moviebase.core.ui.MovieRecyclerViewAdapter
+import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.favorite.databinding.FragmentFavoriteBinding
 import com.kadon.moviebase.favorite.di.favoriteModul
 import com.kadon.moviebase.ui.detail.DetailActivity
@@ -42,7 +43,7 @@ class FavoriteFragment : Fragment() {
             val movieAdapter = MovieRecyclerViewAdapter()
             movieAdapter.onMovieClick = {
                 val intent = Intent(activity, DetailActivity::class.java)
-                intent.putExtra(DetailActivity.EXTRA_MOVIE_DATA, it)
+                intent.putExtra(K.MOVIE_ID, it.movieId)
                 startActivity(intent)
             }
 

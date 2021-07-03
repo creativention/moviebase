@@ -27,7 +27,7 @@ class MovieRepository(
                     MapData.mapMovieEntitiesToDomain(it)
                 }
 
-            override fun shouldFetch(data: List<MovieModel>?): Boolean = true //data.isNullOrEmpty()
+            override fun shouldFetch(data: List<MovieModel>?): Boolean = data.isNullOrEmpty()
 
             override suspend fun createCall(): Flow<ApiResponse<List<MovieResponse>>> =
                 remoteDataSource.getMovies(s, page)
@@ -50,4 +50,9 @@ class MovieRepository(
             localDataSource.saveFavoriteMovie(movieEntity, isFavorite)
         }
     }
+
+    override fun getMovieDetail(movieId: Long): Flow<MovieModel> =
+        localDataSource.getMovieDetail(movieId).map{
+            MapData.mapMovieEntityToDomain(it)
+        }
 }

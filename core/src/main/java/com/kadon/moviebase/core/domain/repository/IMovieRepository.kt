@@ -8,4 +8,5 @@ interface IMovieRepository {
     fun getMovies(s: String, page: Int): Flow<Resource<List<MovieModel>>>
     fun getFavoriteMovies(): Flow<List<MovieModel>>
     fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean)
+    fun getMovieDetail(movieId: Long): Flow<MovieModel>
 }
