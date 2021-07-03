@@ -167,4 +167,9 @@ class DetailActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        setSupportActionBar(null)
+    }
 }
