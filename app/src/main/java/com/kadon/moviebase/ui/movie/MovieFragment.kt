@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +46,14 @@ class MovieFragment : Fragment() {
             with(binding.recyclerviewMovie) {
                 layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                 adapter = movieAdapter
+                visibility = View.INVISIBLE
+            }
+
+            with(binding.veilFrame){
+                setAdapter(movieAdapter)
+                setLayoutManager(StaggeredGridLayoutManager(2, RecyclerView.VERTICAL))
+                addVeiledItems(5)
+                veil()
             }
 
             movieViewModel.movieLiveData.observe(viewLifecycleOwner, { movies ->
@@ -54,14 +61,27 @@ class MovieFragment : Fragment() {
 
                 if (movies != null) {
                     when (movies) {
-                        is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
+                        is Resource.Loading -> {
+                            with(binding.veilFrame){
+                                visibility = View.VISIBLE
+                                veil()
+                            }
+                            with(binding.recyclerviewMovie){
+                                visibility = View.INVISIBLE
+                            }
+                        }
                         is Resource.Success -> {
-                            binding.progressBar.visibility = View.GONE
+                            with(binding.veilFrame){
+                                visibility = View.GONE
+                                unVeil()
+                            }
+                            with(binding.recyclerviewMovie){
+                                visibility = View.VISIBLE
+                            }
                             movieAdapter.setData(movies.data)
                         }
                         is Resource.Error -> {
-                            Toast.makeText(requireContext(), "Something Error!", Toast.LENGTH_SHORT)
-                                .show()
+                            handleError()
                         }
                     }
                 }
@@ -69,6 +89,10 @@ class MovieFragment : Fragment() {
 
             initSearchFilter()
         }
+    }
+
+    private fun handleError() {
+        Timber.e("Something went error!")
     }
 
     private fun initSearchFilter() {

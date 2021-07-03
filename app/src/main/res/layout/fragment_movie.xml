@@ -6,6 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.movie.MovieFragment">
 
+    <com.skydoves.androidveil.VeilRecyclerFrameView
+        android:id="@+id/veilFrame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingStart="8dp"
+        android:paddingTop="72dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:veilFrame_layout="@layout/recyclerview_layout_movie_grid"
+        app:veilFrame_veiled="true"
+        app:veilFrame_shimmerEnable="true"
+        app:veilFrame_baseColor="?attr/colorPrimary"
+        app:veilFrame_highlightColor="?attr/colorSecondaryVariant"
+        app:veilFrame_baseAlpha="0.2"
+        app:veilFrame_highlightAlpha="0.5"
+        app:veilFrame_radius="4dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_movie"
         android:layout_width="0dp"
@@ -23,26 +45,6 @@
         tools:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         tools:listitem="@layout/recyclerview_layout_movie_grid_dummy"
         tools:spanCount="2" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <ProgressBar
-        android:id="@+id/progress_bar_bottom"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <View
         android:layout_width="0dp"

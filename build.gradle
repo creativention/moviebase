@@ -23,6 +23,7 @@ buildscript {
         kotlin_coroutines_version = "1.4.2"
         lifecycle_version = "2.3.1"
         koin_version = "2.1.6"
+        lottie_version = "3.7.0"
     }
 
     repositories {
@@ -42,6 +43,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
