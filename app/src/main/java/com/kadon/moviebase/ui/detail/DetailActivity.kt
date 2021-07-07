@@ -14,11 +14,13 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.kadon.moviebase.R
+import com.kadon.moviebase.core.domain.model.MovieModel
 import com.kadon.moviebase.core.utils.ColorFactor
 import com.kadon.moviebase.core.utils.GlideApp
 import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.databinding.ActivityDetailBinding
 import org.koin.android.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class DetailActivity : AppCompatActivity() {
 
@@ -92,14 +94,23 @@ class DetailActivity : AppCompatActivity() {
                 setMovieFavorite(isMovieFavorite)
                 binding.includeContent.mbFavorite.setOnClickListener {
                     isMovieFavorite = !isMovieFavorite
-                    detailViewModel.setFavoriteMovie(movieDetail, isMovieFavorite)
-                    setMovieFavorite(isMovieFavorite)
+
+                    observeFavorite(movieDetail, isMovieFavorite)
+
                 }
 
                 binding.includeContent.ratingBar2.rating = (movieDetail.voteAverage / 2).toFloat()
 
             }
         })
+    }
+
+    private fun observeFavorite(movieDetail: MovieModel, isMovieFavorite: Boolean) {
+        detailViewModel.setFavoriteMovie(movieDetail, isMovieFavorite).observe(this, {
+            Timber.d("Movie set favorite = $it")
+        })
+
+        setMovieFavorite(isMovieFavorite)
     }
 
     private fun setToolbarColor(palette: Palette?) {

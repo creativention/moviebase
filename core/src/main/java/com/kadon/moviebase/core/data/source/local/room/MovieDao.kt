@@ -16,7 +16,7 @@ interface MovieDao {
     suspend fun insertMovies(movies: List<MovieEntity>)
 
     @Update
-    fun updateFaveMovie(movie: MovieEntity)
+    suspend fun updateFaveMovie(movie: MovieEntity): Int
 
     @Query("SELECT * FROM movies WHERE movieId = :movieId")
     fun getMovieDetail(movieId: Long): Flow<MovieEntity>

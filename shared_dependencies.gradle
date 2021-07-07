@@ -19,9 +19,11 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
     //koin
-    implementation "org.koin:koin-core:$koin_version"
+    /*implementation "org.koin:koin-core:$koin_version"
     implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-android-viewmodel:$koin_version"
+    implementation "org.koin:koin-android-viewmodel:$koin_version"*/
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android-viewmodel:$koin_version"
 
     //Gson
     implementation 'com.google.code.gson:gson:2.8.6'

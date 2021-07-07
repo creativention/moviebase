@@ -17,7 +17,7 @@ class MovieInteractor(
         return movieRepository.getFavoriteMovies()
     }
 
-    override fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean) {
+    override fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean) : Flow<Int> {
         return movieRepository.setFavoriteMovie(movieModel, isFavorite)
     }
 

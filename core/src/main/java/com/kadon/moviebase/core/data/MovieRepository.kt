@@ -6,15 +6,16 @@ import com.kadon.moviebase.core.data.source.remote.api.ApiResponse
 import com.kadon.moviebase.core.data.source.remote.response.MovieResponse
 import com.kadon.moviebase.core.domain.model.MovieModel
 import com.kadon.moviebase.core.domain.repository.IMovieRepository
-import com.kadon.moviebase.core.utils.AppExecutors
 import com.kadon.moviebase.core.utils.MapData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class MovieRepository(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource,
-    private val appExecutors: AppExecutors
+    private val localDataSource: LocalDataSource
 ) : IMovieRepository {
     override fun getMovies(
         s: String,
@@ -44,11 +45,11 @@ class MovieRepository(
             MapData.mapMovieEntitiesToDomain(it)
         }
 
-    override fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean) {
+    override fun setFavoriteMovie(movieModel: MovieModel, isFavorite: Boolean) : Flow<Int>{
         val movieEntity = MapData.mapDomainToMovieEntities(movieModel)
-        appExecutors.diskIO().execute {
-            localDataSource.saveFavoriteMovie(movieEntity, isFavorite)
-        }
+        return flow {
+            emit(localDataSource.saveFavoriteMovie(movieEntity, isFavorite))
+        }.flowOn(Dispatchers.IO)
     }
 
     override fun getMovieDetail(movieId: Long): Flow<MovieModel> =
