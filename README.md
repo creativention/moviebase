@@ -4,8 +4,7 @@
 
 
 
-    Continuous Integration :
-        Tool yang digunakan : CircleCI
+    Using Circle CI
   
 [![heskadon](https://circleci.com/gh/creativention/moviebase.svg?style=shield)](https://circleci.com/gh/creativention/moviebase)
 
