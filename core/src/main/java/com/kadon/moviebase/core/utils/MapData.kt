@@ -2,7 +2,7 @@ package com.kadon.moviebase.core.utils
 
 import com.kadon.moviebase.core.data.source.local.entity.MovieEntity
 import com.kadon.moviebase.core.data.source.remote.response.MovieResponse
-import com.kadon.moviebase.core.domain.model.MovieModel
+import com.kadon.moviebase.core.domain.model.Movie
 
 object MapData {
     fun mapMovieResponsesToEntities(input: List<MovieResponse>): List<MovieEntity> {
@@ -26,9 +26,9 @@ object MapData {
         }
     }
 
-    fun mapMovieEntitiesToDomain(input: List<MovieEntity>): List<MovieModel> {
+    fun mapMovieEntitiesToDomain(input: List<MovieEntity>): List<Movie> {
         return input.map {
-            MovieModel(
+            Movie(
                 movieId = it.movieId,
                 overview = it.overview,
                 originalLanguage = it.originalLanguage,
@@ -47,7 +47,7 @@ object MapData {
         }
     }
 
-    fun mapDomainToMovieEntities(input: MovieModel) = MovieEntity(
+    fun mapDomainToMovieEntities(input: Movie) = MovieEntity(
         movieId = input.movieId,
         overview = input.overview,
         originalLanguage = input.originalLanguage,
@@ -64,8 +64,8 @@ object MapData {
         isFavorite = input.isFavorite
     )
 
-    fun mapMovieEntityToDomain(it: MovieEntity) : MovieModel =
-        MovieModel(
+    fun mapMovieEntityToDomain(it: MovieEntity) : Movie =
+        Movie(
              movieId = it.movieId,
              overview = it.overview,
              originalLanguage = it.originalLanguage,

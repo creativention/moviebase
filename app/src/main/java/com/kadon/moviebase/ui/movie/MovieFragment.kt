@@ -7,22 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.kadon.moviebase.core.data.Resource
-import com.kadon.moviebase.core.ui.MovieRecyclerViewAdapter
+import com.kadon.moviebase.core.ui.MoviePagingAdapter
 import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.databinding.FragmentMovieBinding
 import com.kadon.moviebase.ui.detail.DetailActivity
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class MovieFragment : Fragment() {
 
-    private val movieViewModel: MovieViewModel by viewModel()
+    private val viewModel: MovieViewModel by viewModel()
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
-    private val movieAdapter = MovieRecyclerViewAdapter()
+    private val movieAdapter = MoviePagingAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,14 +49,14 @@ class MovieFragment : Fragment() {
                 visibility = View.INVISIBLE
             }
 
-            with(binding.veilFrame){
+            with(binding.veilFrame) {
                 setAdapter(movieAdapter)
                 setLayoutManager(StaggeredGridLayoutManager(2, RecyclerView.VERTICAL))
                 addVeiledItems(5)
                 veil()
             }
 
-            movieViewModel.movieLiveData.observe(viewLifecycleOwner, { movies ->
+            /*movieViewModel.movieLiveData.observe(viewLifecycleOwner, { movies ->
                 Timber.d("observe movieLiveData")
 
                 if (movies != null) {
@@ -85,14 +85,27 @@ class MovieFragment : Fragment() {
                         }
                     }
                 }
-            })
+            })*/
 
-            initSearchFilter()
+            observeViewModel()
+
+            //initSearchFilter()
         }
     }
 
-    private fun handleError() {
-        Timber.e("Something went error!")
+    private fun observeViewModel() {
+        viewModel.movies.observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                movieAdapter.submitData(it)
+                with(binding.veilFrame){
+                    visibility = View.GONE
+                    unVeil()
+                }
+                with(binding.recyclerviewMovie){
+                    visibility = View.VISIBLE
+                }
+            }
+        })
     }
 
     private fun initSearchFilter() {
@@ -106,7 +119,7 @@ class MovieFragment : Fragment() {
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     //Log.d("TAG", "query = $newText")
-                    if (newText != null) movieAdapter.filter.filter(newText)
+                    //if (newText != null) movieAdapter.filter.filter(newText)
                     return true
                 }
 

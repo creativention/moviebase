@@ -1,6 +1,7 @@
 package com.kadon.moviebase
 
 import android.app.Application
+import androidx.paging.ExperimentalPagingApi
 import com.kadon.moviebase.core.di.databaseModule
 import com.kadon.moviebase.core.di.networkModule
 import com.kadon.moviebase.core.di.repositoryModule
@@ -14,6 +15,7 @@ import timber.log.Timber
 
 @Suppress("unused")
 class MoviebaseApplication : Application() {
+    @ExperimentalPagingApi
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {

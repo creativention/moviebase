@@ -14,7 +14,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.kadon.moviebase.R
-import com.kadon.moviebase.core.domain.model.MovieModel
+import com.kadon.moviebase.core.domain.model.Movie
 import com.kadon.moviebase.core.utils.ColorFactor
 import com.kadon.moviebase.core.utils.GlideApp
 import com.kadon.moviebase.core.utils.K
@@ -105,7 +105,7 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
-    private fun observeFavorite(movieDetail: MovieModel, isMovieFavorite: Boolean) {
+    private fun observeFavorite(movieDetail: Movie, isMovieFavorite: Boolean) {
         detailViewModel.setFavoriteMovie(movieDetail, isMovieFavorite).observe(this, {
             Timber.d("Movie set favorite = $it")
         })

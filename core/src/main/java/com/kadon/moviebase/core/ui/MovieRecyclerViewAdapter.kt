@@ -8,7 +8,7 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.kadon.moviebase.core.R
 import com.kadon.moviebase.core.databinding.RecyclerviewLayoutMovieGridBinding
-import com.kadon.moviebase.core.domain.model.MovieModel
+import com.kadon.moviebase.core.domain.model.Movie
 import com.kadon.moviebase.core.utils.GlideApp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -17,11 +17,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class MovieRecyclerViewAdapter : RecyclerView.Adapter<MovieRecyclerViewAdapter.VH>(), Filterable {
-    private var movieData = ArrayList<MovieModel>()
-    private var movieDataFiltered = ArrayList<MovieModel>()
-    var onMovieClick: ((MovieModel) -> Unit)? = null
+    private var movieData = ArrayList<Movie>()
+    private var movieDataFiltered = ArrayList<Movie>()
+    var onMovieClick: ((Movie) -> Unit)? = null
 
-    fun setData(newMovieData: List<MovieModel>?) {
+    fun setData(newMovieData: List<Movie>?) {
         if (newMovieData != null) {
             movieData.clear()
             movieData.addAll(newMovieData)
@@ -48,7 +48,7 @@ class MovieRecyclerViewAdapter : RecyclerView.Adapter<MovieRecyclerViewAdapter.V
 
     inner class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = RecyclerviewLayoutMovieGridBinding.bind(itemView)
-        fun bind(movie: MovieModel) {
+        fun bind(movie: Movie) {
             with(binding) {
                 tvTitle.text = movie.movieTitle
                 tvDate.text = movie.releaseDate?.let { getFormattedDate(it) }
@@ -89,7 +89,7 @@ class MovieRecyclerViewAdapter : RecyclerView.Adapter<MovieRecyclerViewAdapter.V
                 movieDataFiltered = if (charSearch.isEmpty()) {
                     movieData
                 } else {
-                    val resultList = ArrayList<MovieModel>()
+                    val resultList = ArrayList<Movie>()
                     for (row in movieData) {
                         if (row.movieTitle.lowercase(Locale.getDefault())
                                 .contains(constraint.toString().lowercase(Locale.getDefault())) ||
@@ -109,8 +109,8 @@ class MovieRecyclerViewAdapter : RecyclerView.Adapter<MovieRecyclerViewAdapter.V
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 if (results != null) if (results.values != null) {
                     val filtered = results.values as ArrayList<*>
-                    movieDataFiltered = filtered.filterIsInstance<MovieModel>()
-                        .takeIf { it.size == filtered.size } as ArrayList<MovieModel>
+                    movieDataFiltered = filtered.filterIsInstance<Movie>()
+                        .takeIf { it.size == filtered.size } as ArrayList<Movie>
                     notifyDataSetChanged()
                 }
             }

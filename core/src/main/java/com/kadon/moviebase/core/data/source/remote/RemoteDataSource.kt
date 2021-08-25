@@ -1,6 +1,5 @@
 package com.kadon.moviebase.core.data.source.remote
 
-import android.util.Log
 import com.kadon.moviebase.core.data.source.remote.api.ApiResponse
 import com.kadon.moviebase.core.data.source.remote.api.ApiService
 import com.kadon.moviebase.core.data.source.remote.response.MovieResponse
@@ -8,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 
 class RemoteDataSource(
     private val apiService: ApiService
@@ -27,7 +27,7 @@ class RemoteDataSource(
                 }
             } catch (e: Exception) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
+                Timber.e(e.toString())
             }
         }.flowOn(Dispatchers.IO)
     }

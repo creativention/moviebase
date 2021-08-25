@@ -10,15 +10,15 @@ interface ApiService {
     @GET("/3/movie/{category}")
     suspend fun getMovies(
         @Path("category")
-        category: String,
+        category: String? = K.CATEGORY_POPULAR,
 
         @Query("api_key")
-        apiKey: String = K.API_KEY,
+        apiKey: String? = K.API_KEY,
 
         @Query("language")
-        language: String = K.LANGUAGE,
+        language: String? = K.LANGUAGE,
 
         @Query("page")
-        page: Int
+        page: Int? = null
     ): GetMovieResponse
 }
