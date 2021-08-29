@@ -38,7 +38,7 @@ class MovieRemoteMediator(
             REFRESH -> {
                 val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                 val r = remoteKeys?.nextKey?.minus(1) ?: STARTING_PAGE_INDEX
-                Timber.d("MediatorResult : $r")
+                Timber.d("MediatorResult REFRESH : $r")
                 r
             }
             PREPEND -> {
@@ -49,11 +49,9 @@ class MovieRemoteMediator(
                 // If remoteKeys is NOT NULL but its prevKey is null, that means we've reached
                 // the end of pagination for prepend.
                 val prevKey = remoteKeys?.prevKey
-                if (prevKey == null) {
-                    return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
-                }
+                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
 
-                Timber.d("MediatorResult : $prevKey")
+                Timber.d("MediatorResult prevKey : $prevKey")
                 prevKey
             }
             APPEND -> {
@@ -64,11 +62,9 @@ class MovieRemoteMediator(
                 // If remoteKeys is NOT NULL but its prevKey is null, that means we've reached
                 // the end of pagination for append.
                 val nextKey = remoteKeys?.nextKey
-                if (nextKey == null) {
-                    return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
-                }
+                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
 
-                Timber.d("MediatorResult : $nextKey")
+                Timber.d("MediatorResult nextKey : $nextKey")
                 nextKey
             }
         }
@@ -81,7 +77,11 @@ class MovieRemoteMediator(
             Timber.d("MediatorResult -> page : ${response.page} total : ${response.totalPages}")
 
             val movies = MapData.mapMovieResponsesToEntities(response.results)
-            val endOfPaginationReached = movies.isEmpty()
+            for (m in movies){
+                m.page = page
+            }
+
+            val endOfPaginationReached = response.page == response.totalPages
 
             if (loadType == REFRESH) {
                 localDataSource.clearMovies()
@@ -91,11 +91,18 @@ class MovieRemoteMediator(
             val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
             val nextKey = if (endOfPaginationReached) null else page + 1
             val keys = movies.map {
-                RemoteKeys(movieId = it.movieId, prevKey = prevKey, nextKey = nextKey)
+                RemoteKeys(
+                    movieId = it.movieId,
+                    title = it.movieTitle,
+                    prevKey = prevKey,
+                    nextKey = nextKey
+                )
             }
             localDataSource.insertRemoteKeys(keys)
+
             localDataSource.insertMovies(movies)
 
+            Timber.d("MediatorResult endOfPaginationReached : $endOfPaginationReached")
             MediatorResult.Success(endOfPaginationReached)
         } catch (e: IOException) {
             MediatorResult.Error(e)
@@ -107,11 +114,14 @@ class MovieRemoteMediator(
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, MovieEntity>): RemoteKeys? {
         // Get the last page that was retrieved, that contained items.
         // From that last page, get the last item
-        return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
+        val lastRemote = state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { m ->
                 // Get the remote keys of the last item retrieved
                 localDataSource.remoteKeysRepoId(m.movieId)
             }
+        Timber.d("MediatorResult getRemoteKeyForLastItem : $lastRemote")
+
+        return lastRemote
     }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, MovieEntity>): RemoteKeys? {

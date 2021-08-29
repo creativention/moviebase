@@ -5,8 +5,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "movies")
-data class MovieEntity(
+@Entity(tableName = "favorite")
+data class FavoriteEntity(
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "movieId")
@@ -49,8 +49,5 @@ data class MovieEntity(
     var voteCount: Int,
 
     @ColumnInfo(name = "isFavorite")
-    var isFavorite: Boolean? = false,
-
-    @ColumnInfo(name = "page")
-    var page: Int? = null
+    var isFavorite: Boolean? = false
 )

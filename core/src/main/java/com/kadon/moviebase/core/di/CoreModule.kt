@@ -2,6 +2,7 @@ package com.kadon.moviebase.core.di
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
+import com.kadon.moviebase.core.data.FavoriteRepository
 import com.kadon.moviebase.core.data.MoviePagingRepository
 import com.kadon.moviebase.core.data.MovieRemoteMediator
 import com.kadon.moviebase.core.data.MovieRepository
@@ -9,10 +10,9 @@ import com.kadon.moviebase.core.data.source.local.LocalDataSource
 import com.kadon.moviebase.core.data.source.local.room.MoviesDatabase
 import com.kadon.moviebase.core.data.source.remote.RemoteDataSource
 import com.kadon.moviebase.core.data.source.remote.api.ApiService
+import com.kadon.moviebase.core.domain.repository.IFavoriteRespository
 import com.kadon.moviebase.core.domain.repository.IMoviePagingRepository
 import com.kadon.moviebase.core.domain.repository.IMovieRepository
-import net.sqlcipher.database.SQLiteDatabase
-import net.sqlcipher.database.SupportFactory
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,15 +25,16 @@ import java.util.concurrent.TimeUnit
 val databaseModule = module {
     factory { get<MoviesDatabase>().movieDao() }
     factory { get<MoviesDatabase>().remoteKeysDao() }
+    factory { get<MoviesDatabase>().favoriteDao() }
     single {
-        val passphrase: ByteArray = SQLiteDatabase.getBytes("moviebase_passphrase".toCharArray())
-        val supportFactory = SupportFactory(passphrase)
+        //val passphrase: ByteArray = SQLiteDatabase.getBytes("moviebase_passphrase".toCharArray())
+        //val supportFactory = SupportFactory(passphrase)
 
         Room.databaseBuilder(
             androidContext(),
             MoviesDatabase::class.java, "Moviebase.db"
         )
-            .openHelperFactory(supportFactory)
+            //.openHelperFactory(supportFactory)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -68,10 +69,11 @@ val networkModule = module {
 
 @ExperimentalPagingApi
 val repositoryModule = module {
-    single { LocalDataSource(get(), get()) }
+    single { LocalDataSource(get(), get(), get()) }
     single { RemoteDataSource(get()) }
     single { MovieRemoteMediator(get(),get()) }
 
     single<IMovieRepository> { MovieRepository(get(), get()) }
     single<IMoviePagingRepository> { MoviePagingRepository(get(), get()) }
+    single<IFavoriteRespository> { FavoriteRepository(get()) }
 }

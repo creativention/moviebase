@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +13,7 @@ import com.kadon.moviebase.core.ui.MoviePagingAdapter
 import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.databinding.FragmentMovieBinding
 import com.kadon.moviebase.ui.detail.DetailActivity
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -56,80 +56,34 @@ class MovieFragment : Fragment() {
                 veil()
             }
 
-            /*movieViewModel.movieLiveData.observe(viewLifecycleOwner, { movies ->
-                Timber.d("observe movieLiveData")
-
-                if (movies != null) {
-                    when (movies) {
-                        is Resource.Loading -> {
-                            with(binding.veilFrame){
-                                visibility = View.VISIBLE
-                                veil()
-                            }
-                            with(binding.recyclerviewMovie){
-                                visibility = View.INVISIBLE
-                            }
-                        }
-                        is Resource.Success -> {
-                            with(binding.veilFrame){
-                                visibility = View.GONE
-                                unVeil()
-                            }
-                            with(binding.recyclerviewMovie){
-                                visibility = View.VISIBLE
-                            }
-                            movieAdapter.setData(movies.data)
-                        }
-                        is Resource.Error -> {
-                            handleError()
-                        }
-                    }
-                }
-            })*/
-
             observeViewModel()
-
-            //initSearchFilter()
         }
     }
 
     private fun observeViewModel() {
-        viewModel.movies.observe(viewLifecycleOwner, {
+        with(binding.veilFrame){
+            visibility = View.GONE
+            unVeil()
+        }
+        with(binding.recyclerviewMovie){
+            visibility = View.VISIBLE
+        }
+        /*viewModel.movies.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
                 movieAdapter.submitData(it)
-                with(binding.veilFrame){
-                    visibility = View.GONE
-                    unVeil()
-                }
-                with(binding.recyclerviewMovie){
-                    visibility = View.VISIBLE
-                }
             }
-        })
-    }
+        })*/
 
-    private fun initSearchFilter() {
-        with(binding.searchView) {
-            setOnClickListener {
-                isIconified = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.movies.collectLatest {
+                movieAdapter.submitData(it)
             }
-
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean = true
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    //Log.d("TAG", "query = $newText")
-                    //if (newText != null) movieAdapter.filter.filter(newText)
-                    return true
-                }
-
-            })
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.recyclerviewMovie.adapter = null
         _binding = null
     }
 

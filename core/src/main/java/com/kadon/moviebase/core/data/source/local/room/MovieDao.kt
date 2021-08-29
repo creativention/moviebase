@@ -10,7 +10,7 @@ interface MovieDao {
     @Query("SELECT * FROM movies")
     fun getMovies(): Flow<List<MovieEntity>>
 
-    @Query("SELECT * FROM movies ORDER BY popularity DESC")
+    @Query("SELECT * FROM movies ORDER BY page ASC, popularity DESC")
     fun getPagingMovies(): PagingSource<Int, MovieEntity>
 
     @Query("SELECT * FROM movies WHERE isFavorite = 1")

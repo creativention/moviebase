@@ -39,4 +39,12 @@ dependencies {
     implementation "com.github.skydoves:androidveil:1.1.1"
 
     implementation "com.airbnb.android:lottie:$lottie_version"
+
+    def nav_version = "2.4.0-alpha07"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+
+    def fragment_version = "1.4.0-alpha07"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
 }

@@ -79,6 +79,6 @@ object MapData {
              voteAverage = it.voteAverage,
              adult = it.adult,
              voteCount = it.voteCount,
-             isFavorite = it.isFavorite,
+             isFavorite = it.isFavorite?:false,
         )
 }

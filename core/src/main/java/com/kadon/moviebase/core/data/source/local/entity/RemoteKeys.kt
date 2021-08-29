@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class RemoteKeys(
     @PrimaryKey
     val movieId: Long,
+    val title: String?,
     val prevKey: Int?,
     val nextKey: Int?
 )

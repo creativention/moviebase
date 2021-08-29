@@ -20,12 +20,11 @@ import com.kadon.moviebase.core.utils.GlideApp
 import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.databinding.ActivityDetailBinding
 import org.koin.android.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    private val detailViewModel: DetailViewModel by viewModel()
+    private val viewModel: DetailViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,78 +37,84 @@ class DetailActivity : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
             val movieId = bundle.getLong(K.MOVIE_ID)
-
-            bindMovieDetail(movieId)
+            val from = bundle.getString(K.EXTRA_FROM)
+            initViewModel(movieId, from)
+            obserViewModel()
         }
 
     }
 
-    private fun bindMovieDetail(movieId: Long) {
-        detailViewModel.getMovieDetail(movieId).observe(this, { movieDetail ->
-
-            movieDetail?.let { it ->
-                supportActionBar?.title = it.movieTitle
-                GlideApp.with(this)
-                    .asBitmap()
-                    .load("${K.IMAGE_BACKDROP_BASE}${it.backdropPath}")
-                    .listener(object : RequestListener<Bitmap> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Bitmap>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: Bitmap?,
-                            model: Any?,
-                            target: Target<Bitmap>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            convertToBitmap(binding.imageViewBackDrop)?.let {
-                                resource?.let { it1 -> createPaletteAsync(it1) }
-                            }
-                            return false
-                        }
-                    })
-                    .placeholder(R.drawable.img_bg)
-                    .into(binding.imageViewBackDrop)
-
-                GlideApp.with(this)
-                    .load("${K.IMAGE_BASE}${it.posterPath}")
-                    .placeholder(R.drawable.img_bg)
-                    .into(binding.includeContent.imageViewPosterDetail)
-
-                ("User Score " + (it.voteAverage * 10) + "%").also {
-                    binding.includeContent.tvUserScore.text = it
-                }
-                binding.includeContent.tvOriginalTitle.text = it.originalTitle
-                binding.includeContent.tvOverview.text = it.overview
-                binding.includeContent.tvReleaseDate.text = it.releaseDate
-
-                var isMovieFavorite = movieDetail.isFavorite
-                setMovieFavorite(isMovieFavorite)
-                binding.includeContent.mbFavorite.setOnClickListener {
-                    isMovieFavorite = !isMovieFavorite
-
-                    observeFavorite(movieDetail, isMovieFavorite)
-
-                }
-
-                binding.includeContent.ratingBar2.rating = (movieDetail.voteAverage / 2).toFloat()
-
-            }
+    private fun obserViewModel() {
+        viewModel.movie.observe(this, {
+            bindToView(it)
         })
     }
 
-    private fun observeFavorite(movieDetail: Movie, isMovieFavorite: Boolean) {
-        detailViewModel.setFavoriteMovie(movieDetail, isMovieFavorite).observe(this, {
-            Timber.d("Movie set favorite = $it")
-        })
+    private fun bindToView(movie: Movie?) {
+        movie?.let { it ->
+            supportActionBar?.title = it.movieTitle
+            GlideApp.with(this)
+                .asBitmap()
+                .load("${K.IMAGE_BACKDROP_BASE}${it.backdropPath}")
+                .listener(object : RequestListener<Bitmap> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
 
+                    override fun onResourceReady(
+                        resource: Bitmap?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        convertToBitmap(binding.imageViewBackDrop)?.let {
+                            resource?.let { it1 -> createPaletteAsync(it1) }
+                        }
+                        return false
+                    }
+                })
+                .placeholder(R.drawable.img_bg)
+                .into(binding.imageViewBackDrop)
+
+            GlideApp.with(this)
+                .load("${K.IMAGE_BASE}${it.posterPath}")
+                .placeholder(R.drawable.img_bg)
+                .into(binding.includeContent.imageViewPosterDetail)
+
+            ("User Score " + (it.voteAverage * 10) + "%").also {
+                binding.includeContent.tvUserScore.text = it
+            }
+            binding.includeContent.tvOriginalTitle.text = it.originalTitle
+            binding.includeContent.tvOverview.text = it.overview
+            binding.includeContent.tvReleaseDate.text = it.releaseDate
+
+            var isMovieFavorite = movie.isFavorite
+            setMovieFavorite(isMovieFavorite)
+            binding.includeContent.mbFavorite.setOnClickListener {
+                isMovieFavorite = !isMovieFavorite!!
+
+                observeFavorite(movie, isMovieFavorite!!)
+
+            }
+
+            binding.includeContent.ratingBar2.rating = (movie.voteAverage / 2).toFloat()
+
+        }
+    }
+
+    private fun initViewModel(movieId: Long, from: String?) {
+        viewModel.getMovieDetail(movieId, from)
+    }
+
+    private fun observeFavorite(movieDetail: Movie, isMovieFavorite: Boolean) {
+        movieDetail.isFavorite = isMovieFavorite
+        viewModel.insertMovie(movieDetail)
         setMovieFavorite(isMovieFavorite)
     }
 
@@ -155,8 +160,8 @@ class DetailActivity : AppCompatActivity() {
         return drawable?.bitmap
     }
 
-    private fun setMovieFavorite(movieFavorite: Boolean) {
-        if (movieFavorite) {
+    private fun setMovieFavorite(movieFavorite: Boolean?) {
+        if (movieFavorite == true) {
             binding.includeContent.mbFavorite.icon =
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_favorite_24, theme)
         } else {

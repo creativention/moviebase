@@ -7,13 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.kadon.moviebase.core.ui.MovieRecyclerViewAdapter
+import com.kadon.moviebase.core.ui.MoviePagingAdapter
 import com.kadon.moviebase.core.utils.K
 import com.kadon.moviebase.favorite.databinding.FragmentFavoriteBinding
 import com.kadon.moviebase.favorite.di.favoriteModul
 import com.kadon.moviebase.ui.detail.DetailActivity
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 
@@ -24,6 +26,8 @@ class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
+
+    private val movieAdapter = MoviePagingAdapter()
 
 
     override fun onCreateView(
@@ -40,17 +44,19 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
 
-            val movieAdapter = MovieRecyclerViewAdapter()
             movieAdapter.onMovieClick = {
-                val intent = Intent(activity, DetailActivity::class.java)
-                intent.putExtra(K.MOVIE_ID, it.movieId)
-                startActivity(intent)
+                startActivity(Intent(activity, DetailActivity::class.java).apply {
+                    putExtra(K.MOVIE_ID, it.movieId)
+                    putExtra(K.EXTRA_FROM, K.FAVORITE_MODULE)
+                })
             }
 
             favoriteViewModel.favoriteMovie.observe(viewLifecycleOwner, { favoriteMovie ->
-                movieAdapter.setData(favoriteMovie)
+                lifecycleScope.launch {
+                    movieAdapter.submitData(favoriteMovie)
+                }
                 binding.viewEmpty.root.visibility =
-                    if (favoriteMovie.isNotEmpty()) View.GONE else View.VISIBLE
+                    if (favoriteMovie != null) View.GONE else View.VISIBLE
             })
 
             with(binding.recyclerviewMovieFavorite) {
@@ -66,7 +72,7 @@ class FavoriteFragment : Fragment() {
                     override fun onQueryTextSubmit(query: String?): Boolean = true
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        if (newText != null) movieAdapter.filter.filter(newText)
+                        //if (newText != null) movieAdapter.filter.filter(newText)
                         return true
                     }
 
@@ -77,6 +83,7 @@ class FavoriteFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.recyclerviewMovieFavorite.adapter = null
         _binding = null
     }
 }

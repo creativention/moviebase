@@ -2,12 +2,19 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/favorite_navigation"
-    app:startDestination="@id/navigation_favorite">
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_movies">
+
+    <fragment
+        android:id="@+id/navigation_movies"
+        android:name="com.kadon.moviebase.ui.movie.MovieFragment"
+        android:label="@string/title_movie"
+        tools:layout="@layout/fragment_movie" />
+    
     <fragment
         android:id="@+id/navigation_favorite"
-        app:moduleName="Favorite"
         android:name="com.kadon.moviebase.favorite.FavoriteFragment"
         android:label="@string/title_favorite"
+        app:moduleName="Moviebase.favorite"
         tools:layout="@layout/fragment_favorite" />
 </navigation>
